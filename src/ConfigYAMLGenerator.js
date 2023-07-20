@@ -8,7 +8,7 @@ function ConfigYAMLGenerator({
   extractArgs,
   processingScript,
   mapping,
-  scheduleDOW, // TODO: convert from labels to numbers
+  scheduleDOW,
   scheduleTime,
   apply,
   daysOfWeek,
@@ -20,6 +20,8 @@ function ConfigYAMLGenerator({
 
   const showPipelineError = pipeline === defaultSelect;
   const showExtractorError = extractor === defaultSelect;
+  const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+  const isValidScheduleTime = timeRegex.test(scheduleTime);
 
   // Helper function to create the indentation for each line
   const indent = (spaces) => " ".repeat(spaces);
@@ -27,6 +29,7 @@ function ConfigYAMLGenerator({
   return (
     <div>
       <span className="HeaderSmall">😺 Meowzers, a YAML! 😺</span>
+      <br />
       <pre>
         {`district: ${district}`}
         {showPipelineError ? "" : `\n${indent(0)}pipeline: ${pipeline}`}
@@ -40,20 +43,25 @@ function ConfigYAMLGenerator({
               .join("")}`
           : ""}
         {processingScript
-          ? `\n${indent(0)}processing:\n${indent(2)}processing_type: custom\n${indent(
+          ? `\n${indent(0)}processing:\n${indent(
               2
-            )}script: ${processingScript}`
+            )}processing_type: custom\n${indent(2)}script: ${processingScript}`
           : ""}
         {`\nmapping: ${mapping}`}
-        {`\nschedule:\n${indent(2)}dow: [${scheduleDOWNumbers.join(", ")}]\n${indent(
-          2
-        )}time: ${scheduleTime}`}
-        {`\napply: ${apply}`}</pre>
+        {`\nschedule:\n${indent(2)}dow: [${scheduleDOWNumbers.join(
+          ", "
+        )}]\n${indent(2)}time: ${scheduleTime}`}
+        {`\napply: ${apply}`}
+      </pre>
+      <br />
       {showPipelineError && (
         <div className="ErrorMessage">Please select a pipeline.</div>
       )}
       {showExtractorError && (
-        <div className="ErrorMessage">Please select an Extractor.</div>
+        <div className="ErrorMessage">Please select an extractor.</div>
+      )}
+      {!isValidScheduleTime && (
+        <div className="ErrorMessage">Please enter a valid schedule_time.</div>
       )}
     </div>
   );

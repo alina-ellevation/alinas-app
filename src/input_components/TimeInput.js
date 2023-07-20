@@ -16,7 +16,7 @@ function TimeInput({ label, value, handleChange }) {
       <TextEntryField label={label} value={value} handleChange={handleChange} />
       {!isValid && (
         <div className="ErrorMessage">
-          Please enter a valid time in military format (00:00-23:59).
+          <b>Valid format: Military Time - 00:00-23:59</b>
         </div>
       )}
     </>

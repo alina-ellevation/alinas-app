@@ -14,7 +14,7 @@ function JobConfigurationGenerator() {
 
   const [district, setDistrict] = React.useState("ESLREPS-AA-DEMO");
   const [pipeline, setPipeline] = React.useState(defaultSelect);
-  const [description, setDescription] = React.useState("");
+  const [description, setDescription] = React.useState("What this job does");
   const [extractor, setExtractor] = React.useState(defaultSelect);
   const [extractArgs, setExtractArgs] = React.useState({});
   const [processingScript, setProcessingScript] = React.useState("");
