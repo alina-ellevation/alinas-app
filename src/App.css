@@ -1,31 +1,53 @@
 .App {
+  background-color: #000000;
+  color: white;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Each column takes up 1 fraction of the available space */
+  gap: 30px;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: left;
+  font-size: 16px;
+}
+
+.LeftColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.MiddleColumn {
+  display: grid;
+  grid-template-columns: 40%; /* Middle column takes up 40% of the available space */
+  gap: 10px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.RightColumn {
+  text-align: left;
+  margin-top: 50px;
+}
+
+.Header {
+  padding: 10px;
+  font-family: CatFont;
+  font-size: 64px;
+  text-align: center;
+}
+
+.HeaderSmall {
+  padding: 10px;
+  font-family: CatFont;
+  font-size: 36px;
   text-align: center;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
+  animation: App-logo-spin infinite 20s linear;
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +57,84 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.ComponentsContainer {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.LabelContainer {
+  flex: 0 0 150px;
+  text-align: left;
+  padding: 5px;
+}
+
+.InputContainer {
+  flex: 1;
+}
+
+.InputContainer select,
+.InputContainer input {
+  background-color: #f9f9f9;
+  color: black;
+  padding: 5px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  width: 300px;
+  font-size: 16px;
+  box-sizing: border-box;
+  align-items: left;
+}
+
+.CheckboxInput {
+  width: 20px;
+  height: 20px;
+  margin: 5px 5px 5px 0;
+  border: 1px solid #000000;
+}
+
+.MultiSelectInput {
+  flex: 1;
+  width: 300px;
+}
+
+.MultiSelectInput label {
+  display: flex;
+  align-items: center;
+}
+
+.MultiSelectInput label::after {
+  content: "\A";
+  white-space: pre;
+}
+
+.ButtonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: center;
+  margin: 5px 0 0 20px;
+}
+
+.ButtonContainer button {
+  width: 100px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+.ErrorMessage {
+  width: 100%;
+  color: red;
+  white-space: nowrap;
+  margin: 0 0 15px 5px; 
 }
