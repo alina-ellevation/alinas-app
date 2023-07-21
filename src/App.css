@@ -135,6 +135,11 @@
 .ErrorMessage {
   width: 100%;
   color: red;
+  font-size: 20px;
   white-space: nowrap;
   margin: 0 0 15px 5px; 
+}
+
+.ErrorMessage::before {
+  content: "⚠️ ";
 }

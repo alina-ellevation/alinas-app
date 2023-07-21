@@ -1,8 +1,8 @@
-import '../App.css';
-import React from 'react';
-import Dropdown from './Dropdown';
+import "../App.css";
+import React from "react";
+import Dropdown from "./Dropdown";
 
-function DropdownNestedArgs({ 
+function DropdownNestedArgs({
   label,
   itemsWithArgs,
   selectedItem,
@@ -14,8 +14,15 @@ function DropdownNestedArgs({
     but keep any that do (e.g. retain tenant_id when switching between Clever extractors) */
   React.useEffect(() => {
     const relevantArgs = Object.entries(args)
-      .filter(([key]) => itemsWithArgs[selectedItem]?.some(component => component.props.label === key))
-      .reduce((filteredArgs, [key, value]) => ({ ...filteredArgs, [key]: value }), {});
+      .filter(([key]) =>
+        itemsWithArgs[selectedItem]?.some(
+          (component) => component.props.label === key
+        )
+      )
+      .reduce(
+        (filteredArgs, [key, value]) => ({ ...filteredArgs, [key]: value }),
+        {}
+      );
 
     setArgs(relevantArgs);
   }, [itemsWithArgs, selectedItem, args, setArgs]);
@@ -38,18 +45,17 @@ function DropdownNestedArgs({
       {itemsWithArgs[selectedItem] && // Unfurl args for the selected dropdown item
         itemsWithArgs[selectedItem].map((component, index) => (
           <React.Fragment key={index}>
-            {React.cloneElement(component, { 
+            {React.cloneElement(component, {
               /* TODO BUG: args dict isn't populated with default value,
               a change to it is needed for the key/value pair to appear */
-              value: args[component.props.label] || component.props.default || "",  
-              handleChange: handleChangeArgs(component.props.label) 
+              value:
+                args[component.props.label] || component.props.default || "",
+              handleChange: handleChangeArgs(component.props.label),
             })}
           </React.Fragment>
         ))}
     </div>
   );
-};
+}
 
-export default DropdownNestedArgs
-
-    
+export default DropdownNestedArgs;

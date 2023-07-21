@@ -1,5 +1,5 @@
 import "./App.css";
-import './Fonts.css';
+import "./Fonts.css";
 import React from "react";
 import Checkbox from "./input_components/Checkbox";
 import CheckMultiple from "./input_components/CheckMultiple";
@@ -14,13 +14,14 @@ function JobConfigurationGenerator() {
 
   const [district, setDistrict] = React.useState("ESLREPS-AA-DEMO");
   const [pipeline, setPipeline] = React.useState(defaultSelect);
-  const [description, setDescription] = React.useState("What this job does");
+  const [description, setDescription] = React.useState("");
   const [extractor, setExtractor] = React.useState(defaultSelect);
   const [extractArgs, setExtractArgs] = React.useState({});
   const [processingScript, setProcessingScript] = React.useState("");
   const [mapping, setMapping] = React.useState("!include mappings/file.yml");
   const [scheduleDOW, setScheduleDOW] = React.useState([]);
   const [scheduleTime, setScheduleTime] = React.useState("00:00");
+  const [isValidScheduleTime, setIsValidScheduleTime] = React.useState(true);
   const [apply, setApply] = React.useState(false);
 
   const handleDistrictChange = (value) => {
@@ -47,8 +48,7 @@ function JobConfigurationGenerator() {
       <TextEntryField label="host_url" default="https://" />,
     ],
     classlink_enrollments: [
-      /* TODO: make a reusable ClasslinkTenantIDField component;
-      I tried but it choked whenever the value was being edited. */
+      // TODO: make a reusable ClasslinkTenantIDField component
       <TextEntryField label="tenant_id" intOnly={true} />,
     ],
     classlink_staff: [<TextEntryField label="tenant_id" intOnly={true} />],
@@ -63,8 +63,7 @@ function JobConfigurationGenerator() {
     sharefile: [
       <TextEntryField label="id" />,
       <TextEntryField label="dataset" />,
-      /* TODO: make a reusable FormatDropdown component;
-      I tried but it did not respect selection changes. */
+      // TODO: make a reusable FormatDropdown component
       <Dropdown label="format" items={["csv", "tsv"]} />,
     ],
     simple_sftp: [
@@ -125,6 +124,8 @@ function JobConfigurationGenerator() {
         <TimeInput
           label="schedule_time"
           value={scheduleTime}
+          isValid={isValidScheduleTime}
+          setIsValid={setIsValidScheduleTime}
           handleChange={setScheduleTime}
         />
         <Checkbox label="apply" value={apply} handleChange={setApply} />
@@ -141,8 +142,9 @@ function JobConfigurationGenerator() {
           scheduleDOW={scheduleDOW}
           scheduleTime={scheduleTime}
           apply={apply}
-          daysOfWeek={daysOfWeek}
           defaultSelect={defaultSelect}
+          daysOfWeek={daysOfWeek}
+          isValidScheduleTime={isValidScheduleTime}
         />
       </div>
     </div>
