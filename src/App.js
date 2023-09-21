@@ -11,27 +11,37 @@ import ConfigYAMLGenerator from "./ConfigYAMLGenerator";
 
 function JobConfigurationGenerator() {
   const defaultSelect = "-- SELECT --";
+  const [jobConfiguration, setJobConfiguration] = React.useState({
+    district: "ESLREPS-AA-DEMO",
+    pipeline: defaultSelect,
+    description: "",
+    extractor: defaultSelect,
+    extract_args: {},
+    processing_script: "",
+    mapping: "!include mappings/file.yml",
+    schedule_dow: [],
+    schedule_time: "00:00",
+    is_valid_schedule_time: true,
+    apply: false,
+  });
 
-  const [district, setDistrict] = React.useState("ESLREPS-AA-DEMO");
-  const [pipeline, setPipeline] = React.useState(defaultSelect);
-  const [description, setDescription] = React.useState("");
-  const [extractor, setExtractor] = React.useState(defaultSelect);
-  const [extractArgs, setExtractArgs] = React.useState({});
-  const [processingScript, setProcessingScript] = React.useState("");
-  const [mapping, setMapping] = React.useState("!include mappings/file.yml");
-  const [scheduleDOW, setScheduleDOW] = React.useState([]);
-  const [scheduleTime, setScheduleTime] = React.useState("00:00");
-  const [isValidScheduleTime, setIsValidScheduleTime] = React.useState(true);
-  const [apply, setApply] = React.useState(false);
-
-  const handleDistrictChange = (value) => {
-    setDistrict(value);
-    setExtractArgs({}); // If the district changed, clear out all extract args just to be safe
+  const handleChange = (event) => {
+    setJobConfiguration((prev) => ({
+      ...prev,
+      [event.target.label]: event.target.value, // label to match jobConfiguration property
+    }));
   };
 
-  const districtLowerCase = `${district
+  // TODO: reintroduce this
+  // const handleDistrictChange = (value) => {
+  //   setDistrict(value);
+  //   setExtractArgs({}); // If the district changed, clear out all extract args just to be safe
+  // };
+
+  const districtLowerCase = `${jobConfiguration.district
     .toLowerCase()
     .replace(/^(eslreps-)/, "")}`;
+
   const daysOfWeek = [
     "Monday",
     "Tuesday",
@@ -74,6 +84,21 @@ function JobConfigurationGenerator() {
     STAR: [<TextEntryField label="rl_district_name" />],
   };
 
+  const jobConfigurationComponents = [
+    <TextEntryField label="district" />,
+    <Dropdown
+      label="pipeline"
+      items={[defaultSelect, "assessment_results", "enrollment", "staff"]}
+    />,
+    <TextEntryField label="description" />,
+    <Dropdown label="extractor" items={Object.keys(extractorsWithArgs)} />, // TODO: replace with nested
+    <TextEntryField label="processing_script" />,
+    <TextEntryField label="mapping" />,
+    <CheckMultiple label="schedule_dow" items={daysOfWeek} />,
+    <TimeInput label="schedule_time" setJobConfiguration={setJobConfiguration}/>, // TODO: update handler to validate military time
+    <Checkbox label="apply" />,
+  ];
+
   return (
     <div className="App">
       <div className="LeftColumn">
@@ -81,70 +106,20 @@ function JobConfigurationGenerator() {
         <p className="Header">TCats Job Config Generator</p>
       </div>
       <div className="MiddleColumn">
-        <TextEntryField
-          label="district"
-          value={district}
-          handleChange={handleDistrictChange}
-        />
-        <Dropdown
-          label="pipeline"
-          items={[defaultSelect, "assessment_results", "enrollment", "staff"]}
-          value={pipeline}
-          handleChange={setPipeline}
-        />
-        <TextEntryField
-          label="description"
-          value={description}
-          handleChange={setDescription}
-        />
-        <DropdownNestedArgs
-          label="extractor"
-          itemsWithArgs={extractorsWithArgs}
-          selectedItem={extractor}
-          handleChangeSelectedItem={setExtractor}
-          args={extractArgs}
-          setArgs={setExtractArgs}
-        />
-        <TextEntryField
-          label="processing_script"
-          value={processingScript}
-          handleChange={setProcessingScript}
-        />
-        <TextEntryField
-          label="mapping"
-          value={mapping}
-          handleChange={setMapping}
-        />
-        <CheckMultiple
-          label="schedule_dow"
-          items={daysOfWeek}
-          value={scheduleDOW}
-          setValue={setScheduleDOW}
-        />
-        <TimeInput
-          label="schedule_time"
-          value={scheduleTime}
-          isValid={isValidScheduleTime}
-          setIsValid={setIsValidScheduleTime}
-          handleChange={setScheduleTime}
-        />
-        <Checkbox label="apply" value={apply} handleChange={setApply} />
+        {jobConfigurationComponents.map((component, index) => (
+          <React.Fragment key={index}>
+            {React.cloneElement(component, {
+              value: jobConfiguration[component.props.label],
+              handleChange: handleChange,
+            })}
+          </React.Fragment>
+        ))}
       </div>
       <div className="RightColumn">
         <ConfigYAMLGenerator
-          district={district}
-          pipeline={pipeline}
-          description={description}
-          extractor={extractor}
-          extractArgs={extractArgs}
-          processingScript={processingScript}
-          mapping={mapping}
-          scheduleDOW={scheduleDOW}
-          scheduleTime={scheduleTime}
-          apply={apply}
+          jobConfiguration={jobConfiguration}
           defaultSelect={defaultSelect}
           daysOfWeek={daysOfWeek}
-          isValidScheduleTime={isValidScheduleTime}
         />
       </div>
     </div>

@@ -1,44 +1,30 @@
 import React from "react";
 
-function ConfigYAMLGenerator({
-  district,
-  pipeline,
-  description,
-  extractor,
-  extractArgs,
-  processingScript,
-  mapping,
-  scheduleDOW,
-  scheduleTime,
-  apply,
-  defaultSelect,
-  daysOfWeek,
-  isValidScheduleTime,
-}) {
+function ConfigYAMLGenerator({ jobConfiguration, defaultSelect, daysOfWeek }) {
   // Defined here since used twice: in validations list and yml formatting
-  const isValidPipeline = pipeline != defaultSelect;
-  const isValidExtractor = extractor != defaultSelect;
+  const isValidPipeline = jobConfiguration.pipeline != defaultSelect;
+  const isValidExtractor = jobConfiguration.extractor != defaultSelect;
 
   // List of each validation + message to show if the validation hasn't passed
   const validations = [
     {
-      isValid: district.startsWith("ESLREPS-"),
+      isValid: jobConfiguration.district.startsWith("ESLREPS-"),
       errorMessage: "Please enter a district in valid format.",
     },
     { isValid: isValidPipeline, errorMessage: "Please select a pipeline." },
     {
-      isValid: description !== "",
+      isValid: jobConfiguration.description !== "",
       errorMessage: "Please enter a description.",
     },
     { isValid: isValidExtractor, errorMessage: "Please select an extractor." },
     {
       isValid:
-        mapping.startsWith("!include ") &&
-        mapping !== "!include mappings/file.yml",
+        jobConfiguration.mapping.startsWith("!include ") &&
+        jobConfiguration.mapping !== "!include mappings/file.yml",
       errorMessage: "Please update the mapping path.",
     },
     {
-      isValid: isValidScheduleTime,
+      isValid: jobConfiguration.is_valid_schedule_time,
       errorMessage: "Please enter a valid schedule_time.",
     },
   ];
@@ -50,7 +36,7 @@ function ConfigYAMLGenerator({
     : "😿 Meowzers, invalid config...";
 
   // Helper functions to convert days of week to numbers and set yml indentation
-  const scheduleDOWNumbers = scheduleDOW
+  const scheduleDOWNumbers = jobConfiguration.schedule_dow
     .map((day) => daysOfWeek.indexOf(day) + 1)
     .sort((a, b) => a - b);
   const indent = (spaces) => " ".repeat(spaces);
@@ -60,24 +46,26 @@ function ConfigYAMLGenerator({
       <span className="HeaderSmall">{headerText}</span>
       <br />
       <pre>
-        {`district: ${district}`}
-        {`\npipeline: ${isValidPipeline ? pipeline : ""}`}
-        {`\ndescription: ${description}`}
+        {`district: ${jobConfiguration.district}`}
+        {`\npipeline: ${isValidPipeline ? jobConfiguration.pipeline : ""}`}
+        {`\ndescription: ${jobConfiguration.description}`}
         {`\nextract:`}
-        {`\n${indent(2)}extractor: ${isValidExtractor ? extractor : ""}`}
-        {Object.entries(extractArgs).map(
-          ([key, value]) => `\n${indent(4)}${key}: ${value}`
+        {`\n${indent(2)}extractor: ${
+          isValidExtractor ? jobConfiguration.extractor : ""
+        }`}
+        {Object.entries(jobConfiguration.extract_args).map(
+          ([key, value]) => `\n${indent(2)}${key}: ${value}`
         )}
-        {processingScript
+        {jobConfiguration.processing_script
           ? `\n${indent(0)}processing:` +
             `\n${indent(2)}processing_type: custom` +
-            `\n${indent(2)}script: ${processingScript}`
+            `\n${indent(2)}script: ${jobConfiguration.processing_script}`
           : ""}
-        {`\nmapping: ${mapping}`}
+        {`\nmapping: ${jobConfiguration.mapping}`}
         {`\nschedule:`}
         {`\n${indent(2)}dow: [${scheduleDOWNumbers.join(", ")}]`}
-        {`\n${indent(2)}time: ${scheduleTime}`}
-        {`\napply: ${apply}`}
+        {`\n${indent(2)}time: ${jobConfiguration.schedule_time}`}
+        {`\napply: ${jobConfiguration.apply}`}
       </pre>
       <br />
       {validations.map(
